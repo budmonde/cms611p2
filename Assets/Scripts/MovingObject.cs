@@ -14,9 +14,7 @@ public abstract class MovingObject : MonoBehaviour {
 
     protected virtual void Start() {
         boxCollider = GetComponent<BoxCollider2D>();
-
         rb2D = GetComponent<Rigidbody2D>();
-
         speed = 1f / moveTime;
     }
 
@@ -38,7 +36,6 @@ public abstract class MovingObject : MonoBehaviour {
     }
 
     protected IEnumerator SmoothMovement(Vector3 end) {
-
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
         while (sqrRemainingDistance > float.Epsilon) {

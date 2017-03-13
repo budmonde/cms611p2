@@ -13,15 +13,14 @@ public class BoardManager : MonoBehaviour
 		public int minimum;
 		public int maximum;
 
-		public Count (int min, int max)
-		{
+		public Count (int min, int max) {
 			minimum = min;
 			maximum = max;
 		}
 	}
 
-	public int columns = 10;
-	public int rows = 10;
+	public int columns = 8;
+	public int rows = 8;
 	public Count furnitureCount = new Count (5, 8);
 	public GameObject door;
 
@@ -36,8 +35,7 @@ public class BoardManager : MonoBehaviour
 	private List<Vector3> gridPositions = new List<Vector3> ();
 
 	// Creates list of all possible locations on the board
-	void InitializeList ()
-	{
+	void InitializeList () {
 		gridPositions.Clear ();
 		for (int x = 1; x < columns - 1; x++) {
 			
@@ -49,11 +47,10 @@ public class BoardManager : MonoBehaviour
 	}
 
 	// Places a game object tile at each location on the board
-	void BoardSetup ()
-	{
+	void BoardSetup () {
 		boardHolder = new GameObject ("Board").transform;
-		for (int x = -1; x < columns - 1; x++) {
-			for (int y = -1; y < rows - 1; y++) {
+		for (int x = -1; x < columns + 1; x++) {
+			for (int y = -1; y < rows + 1; y++) {
 				GameObject toInstantiate = floorTiles [Random.Range (0, floorTiles.Length)];
 
 				// places a wall tile if the location is an edge location
@@ -70,16 +67,14 @@ public class BoardManager : MonoBehaviour
 
 	// Generates random position for an object to be placed
 	// prevents 2 objects from being spawned in the same location
-	Vector3 RandomPosition ()
-	{
+	Vector3 RandomPosition () {
 		int randomIndex = Random.Range (0, gridPositions.Count);
 		Vector3 randomPosition = gridPositions [randomIndex];
 		gridPositions.RemoveAt (randomIndex);
 		return randomPosition;
 	}
 
-	void LayoutObjectsAtRandom (GameObject[] tileArray, int minimum, int maximum)
-	{
+	void LayoutObjectsAtRandom (GameObject[] tileArray, int minimum, int maximum) {
 		int objectCount = Random.Range (minimum, maximum + 1);
 
 		// spawn as many objects as objectCount
@@ -91,8 +86,7 @@ public class BoardManager : MonoBehaviour
 	}
 
 	//the only public method - what the gameManager calls
-	public void SetupScene (int level)
-	{
+	public void SetupScene (int level) {
 		BoardSetup ();
 		InitializeList ();
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
@@ -100,6 +94,4 @@ public class BoardManager : MonoBehaviour
 		LayoutObjectsAtRandom (petTiles, petCount, petCount);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 	}
-			
-
 }
