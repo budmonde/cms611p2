@@ -6,6 +6,7 @@ public abstract class MovingObject : MonoBehaviour {
 
     public float moveTime = 0.1f;
     public LayerMask blockingLayer;
+    public GameObject collisionBox;
     public int kitchenCounter = 0;
 
     private BoxCollider2D boxCollider;
@@ -17,6 +18,7 @@ public abstract class MovingObject : MonoBehaviour {
         boxCollider = GetComponent<BoxCollider2D>();
         rb2D = GetComponent<Rigidbody2D>();
         speed = 1f / moveTime;
+
     }
 
     protected bool CanMove() {
@@ -37,7 +39,9 @@ public abstract class MovingObject : MonoBehaviour {
         boxCollider.enabled = true;
 
         if (hit.transform == null) {
-            StartCoroutine(SmoothMovement(end));
+            Vector3 target = new Vector3(end.x, end.y, 0);
+            GameObject instance = Instantiate(collisionBox, target, Quaternion.identity);
+            StartCoroutine(SmoothMovement(end, instance));
             moveCd = moveTime * 2;
             return true;
         } else {
@@ -45,7 +49,7 @@ public abstract class MovingObject : MonoBehaviour {
         }
     }
 
-    protected IEnumerator SmoothMovement(Vector3 end) {
+    protected IEnumerator SmoothMovement(Vector3 end, GameObject instance) {
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 
         while (sqrRemainingDistance > float.Epsilon) {
@@ -54,6 +58,7 @@ public abstract class MovingObject : MonoBehaviour {
             sqrRemainingDistance = (transform.position - end).sqrMagnitude;
             yield return null;
         }
+        Destroy(instance);
     }
 
     protected void incrementKitchenFood() {
