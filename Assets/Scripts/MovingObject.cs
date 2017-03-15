@@ -11,6 +11,7 @@ public abstract class MovingObject : MonoBehaviour {
     private BoxCollider2D boxCollider;
     private Rigidbody2D rb2D;
     private float speed;
+    private float moveCd = 0;
 
     protected virtual void Start() {
         boxCollider = GetComponent<BoxCollider2D>();
@@ -18,8 +19,16 @@ public abstract class MovingObject : MonoBehaviour {
         speed = 1f / moveTime;
     }
 
-    protected bool Move(int xDir, int yDir, out RaycastHit2D hit) {
+    protected bool CanMove() {
+        if (moveCd >= 0) {
+            moveCd -= Time.deltaTime;
+            return false;
+        } else {
+            return true;
+        }
+    }
 
+   protected bool Move(int xDir, int yDir, out RaycastHit2D hit) {
         Vector2 start = transform.position;
         Vector2 end = start + new Vector2(xDir, yDir);
 
@@ -29,6 +38,7 @@ public abstract class MovingObject : MonoBehaviour {
 
         if (hit.transform == null) {
             StartCoroutine(SmoothMovement(end));
+            moveCd = moveTime * 2;
             return true;
         } else {
             return false;
