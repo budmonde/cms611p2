@@ -21,7 +21,7 @@ public class BoardManager : MonoBehaviour
 
 	public int columns = 8;
 	public int rows = 8;
-	public Count furnitureCount = new Count (5, 8);
+	public Count furnitureCount = new Count (10, 15);
 	public GameObject door;
 
 	// these will contain prefabs
@@ -86,12 +86,11 @@ public class BoardManager : MonoBehaviour
 	}
 
 	//the only public method - what the gameManager calls
-	public void SetupScene (int level) {
+	public void SetupScene (int doggos) {
 		BoardSetup ();
 		InitializeList ();
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
-		int petCount = (int)Mathf.Log (level, 2f) + 3;
-		LayoutObjectsAtRandom (petTiles, petCount, petCount);
+		LayoutObjectsAtRandom (petTiles, doggos, doggos);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 	}
 }
