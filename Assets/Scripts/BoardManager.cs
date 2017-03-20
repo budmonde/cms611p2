@@ -91,7 +91,10 @@ public class BoardManager : MonoBehaviour
 		InitializeList ();
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
 		int petCount = (int)Mathf.Log (level, 2f) + 3;
-		LayoutObjectsAtRandom (petTiles, petCount, petCount);
+		for (int i = 0; i < 1; i++) {
+			Instantiate (petTiles [0], new Vector3 (columns - 2, rows - 1, 0f), Quaternion.identity);
+		}
+		//LayoutObjectsAtRandom (petTiles, petCount, petCount);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 	}
 }
