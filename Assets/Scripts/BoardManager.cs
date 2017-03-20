@@ -90,7 +90,10 @@ public class BoardManager : MonoBehaviour
 		BoardSetup ();
 		InitializeList ();
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
-		LayoutObjectsAtRandom (petTiles, doggos, doggos);
+		for (int i = 0; i < 1; i++) {
+			Instantiate (petTiles [0], new Vector3 (columns - 2, rows - 1, 0f), Quaternion.identity);
+		}
+		//LayoutObjectsAtRandom (petTiles, doggos, doggos);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 	}
 }
