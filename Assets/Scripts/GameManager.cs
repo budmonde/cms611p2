@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance = null;
     public BoardManager boardScript;
     public int doggos;
+    private int unhappyPetCounter = 0;
 
     void Awake() {
         if (instance == null) {
@@ -22,4 +23,12 @@ public class GameManager : MonoBehaviour {
     void InitGame() {
         boardScript.SetupScene(doggos);
     }
+
+	public void incrementUnhappyPetCounter() {
+		unhappyPetCounter++;
+	}
+
+	private bool checkEndGame() {
+		return unhappyPetCounter > 5;
+	}
 }
