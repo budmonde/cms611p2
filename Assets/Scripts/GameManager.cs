@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance = null;
     public BoardManager boardScript;
     public int doggos;
-    private int unhappyPetCounter = 0;
+    public int unhappyPetCounter = 0;
 
     void Awake() {
         if (instance == null) {
