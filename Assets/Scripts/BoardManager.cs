@@ -21,7 +21,7 @@ public class BoardManager : MonoBehaviour
 
 	public int columns = 8;
 	public int rows = 8;
-	public Count furnitureCount = new Count (5, 8);
+	public Count furnitureCount = new Count (10, 15);
 	public GameObject door;
 
 	// these will contain prefabs
@@ -86,7 +86,7 @@ public class BoardManager : MonoBehaviour
 	}
 
 	//the only public method - what the gameManager calls
-	public void SetupScene (int level) {
+	public void SetupScene (int doggos) {
 		BoardSetup ();
 		InitializeList ();
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
