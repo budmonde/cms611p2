@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
     private Text levelText;
     private GameObject levelImage;
     public float levelStartDelay = 2f;
+	public int score = 0;
 
     void Awake() {
         if (instance == null) {
@@ -51,6 +52,9 @@ public class GameManager : MonoBehaviour {
             Invoke("GameOver", levelStartDelay);
         }
     }
+	public void IncreaseScore(int increase) {
+		score += increase;
+	}
 
 	public void incrementUnhappyPetCounter() {
 		lives--;
