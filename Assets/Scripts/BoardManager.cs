@@ -24,6 +24,7 @@ public class BoardManager : MonoBehaviour
 	public int rows = 8;
 	public Count furnitureCount = new Count (10, 15);
 	public GameObject door;
+	public GameObject Trash;
 
 	// these will contain prefabs
 	public GameObject[] floorTiles;
@@ -108,6 +109,7 @@ public class BoardManager : MonoBehaviour
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
 		InvokeRepeating ("CreateDoggo", 0.0f, doggoFreq);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
+		Instantiate (Trash, new Vector3 (0, 5, 0f), Quaternion.identity);
 	}
 
 	void CreateDoggo() {
