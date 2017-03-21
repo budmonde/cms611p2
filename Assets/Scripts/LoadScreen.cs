@@ -12,6 +12,10 @@ public class LoadScreen : MonoBehaviour {
 		Application.LoadLevel ("Start");
 	}
 
+	public void clickInstructions(){
+		Application.LoadLevel ("Instructions");
+	}
+
 	public void clickEasyGame(){
 		Debug.Log ("easy game");
 	}
