@@ -8,6 +8,10 @@ public class LoadScreen : MonoBehaviour {
 		Application.LoadLevel ("Difficulty");
 	}
 
+	public void clickPlayAgain(){
+		Application.LoadLevel ("Start");
+	}
+
 	public void clickEasyGame(){
 		Debug.Log ("easy game");
 	}
