@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 	
     void InitGame() {
         lifeText = GameObject.Find("LifeText").GetComponent<Text>();
-        lifeText.text = "Lives: " + lives;
+        lifeText.text = "Lives: " + lives + "\nScore: " + score;
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
         levelText.text = "Start Game";
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
 
 	public void incrementUnhappyPetCounter() {
 		lives--;
-        lifeText.text = "Lives: " + lives;
+        lifeText.text = "Lives: " + lives + "\nScore: " + score;
 	}
 
 	private bool isGameOver() {
