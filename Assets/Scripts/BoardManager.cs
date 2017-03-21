@@ -25,6 +25,8 @@ public class BoardManager : MonoBehaviour
 	public Count furnitureCount = new Count (10, 15);
 	public GameObject door;
 	public GameObject Trash;
+    public LayerMask blockingLayer;
+
 
 	// these will contain prefabs
 	public GameObject[] floorTiles;
@@ -107,13 +109,25 @@ public class BoardManager : MonoBehaviour
 			break;
 		}
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
-		InvokeRepeating ("CreateDoggo", 0.0f, doggoFreq);
+		InvokeRepeating ("DoggoSpawner", 0.0f, doggoFreq);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 		Instantiate (Trash, new Vector3 (0, 5, 0f), Quaternion.identity);
 	}
 
-	void CreateDoggo() {
-		Instantiate (petTiles [0], new Vector3 (8, 9, 0f), Quaternion.identity);
+    private void DoggoSpawner() {
+        StartCoroutine(CreateDoggo());
+    }
+	IEnumerator CreateDoggo() {
+        Vector3 start = new Vector3(9f, 9f, 0);
+        Vector3 end = new Vector3(8f, 9f, 0);
+        BoxCollider2D doorCollider = GameObject.Find("Door(Clone)").GetComponent<BoxCollider2D>();
+        doorCollider.enabled = false;
+        RaycastHit2D hit = Physics2D.Linecast(start, end, blockingLayer);
+        doorCollider.enabled = true;
+        if (hit.transform != null)
+            yield return null;
+        else
+            Instantiate (petTiles [0], end, Quaternion.identity);
 	}
 
 	public int GetColumns() {
