@@ -19,10 +19,14 @@ public class BoardManager : MonoBehaviour
 		}
 	}
 
+	public int difficulty = 0;
 	public int columns = 8;
 	public int rows = 8;
-	public Count furnitureCount = new Count (5, 8);
+	public Count furnitureCount = new Count (10, 15);
 	public GameObject door;
+	public GameObject Trash;
+    public LayerMask blockingLayer;
+
 
 	// these will contain prefabs
 	public GameObject[] floorTiles;
@@ -33,6 +37,7 @@ public class BoardManager : MonoBehaviour
 	// boardHolder is just to make game hierarchy look nicer
 	private Transform boardHolder;
 	private List<Vector3> gridPositions = new List<Vector3> ();
+	private float doggoFreq;
 
 	// Creates list of all possible locations on the board
 	void InitializeList () {
@@ -86,12 +91,55 @@ public class BoardManager : MonoBehaviour
 	}
 
 	//the only public method - what the gameManager calls
-	public void SetupScene (int level) {
+	public void SetupScene (int doggos) {
 		BoardSetup ();
 		InitializeList ();
+		switch (difficulty) {
+		case 0:
+			doggoFreq = 20f;
+			break;
+		case 1:
+			doggoFreq = 10f;
+			break;
+		case 2:
+			doggoFreq = 5f;
+			break;
+		default:
+			doggoFreq = 60f;
+			break;
+		}
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
-		int petCount = (int)Mathf.Log (level, 2f) + 3;
-		LayoutObjectsAtRandom (petTiles, petCount, petCount);
+		InvokeRepeating ("DoggoSpawner", 0.0f, doggoFreq);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
+		Instantiate (Trash, new Vector3 (0, 5, 0f), Quaternion.identity);
+	}
+
+    private void DoggoSpawner() {
+        StartCoroutine(CreateDoggo());
+    }
+	IEnumerator CreateDoggo() {
+        Vector3 start = new Vector3(9f, 9f, 0);
+        Vector3 end = new Vector3(8f, 9f, 0);
+        BoxCollider2D doorCollider = GameObject.Find("Door(Clone)").GetComponent<BoxCollider2D>();
+        doorCollider.enabled = false;
+        RaycastHit2D hit = Physics2D.Linecast(start, end, blockingLayer);
+        doorCollider.enabled = true;
+        if (hit.transform != null)
+            yield return null;
+        else
+            Instantiate (petTiles [0], end, Quaternion.identity);
+	}
+
+	public int GetColumns() {
+		return this.columns;
+	}
+
+	public int GetRows() {
+		return this.rows;
+	}
+
+	public void SetDifficulty(int level) {
+		difficulty = level;
 	}
 }
+
