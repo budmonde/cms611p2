@@ -45,6 +45,7 @@ public abstract class MovingObject : MonoBehaviour {
         if (hit.transform == null) {
             Vector3 target = new Vector3(end.x, end.y, 0);
             GameObject instance = Instantiate(collisionBox, target, Quaternion.identity);
+            instance.transform.parent = this.transform;
             StartCoroutine(SmoothMovement(end, instance));
             moveCd = moveTime * 2;
             return null;
