@@ -90,10 +90,19 @@ public class BoardManager : MonoBehaviour
 		BoardSetup ();
 		InitializeList ();
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
-		for (int i = 0; i < 1; i++) {
-			Instantiate (petTiles [0], new Vector3 (columns - 2, rows - 1, 0f), Quaternion.identity);
-		}
-		//LayoutObjectsAtRandom (petTiles, doggos, doggos);
+		InvokeRepeating ("CreateDoggo", 0.0f, 5.0f);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
+	}
+
+	void CreateDoggo() {
+		Instantiate (petTiles [0], new Vector3 (8, 9, 0f), Quaternion.identity);
+	}
+
+	public int GetColumns() {
+		return this.columns;
+	}
+
+	public int GetRows() {
+		return this.rows;
 	}
 }

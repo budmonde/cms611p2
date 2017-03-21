@@ -67,11 +67,21 @@ public class PetController : MovingObject {
             if (CanMove()) {
                 RaycastHit2D hit;
                 Vector3 oldPos = this.transform.position;
-                Transform transform = Move(xDir, yDir, out hit);
-                if (!transform && needsToPoop && poopTimer < 0) {
-                    Instantiate(Poop, oldPos, Quaternion.identity);
-                    needsToPoop = false;
-                }
+				if (this.transform.position.x + xDir == 8 &&
+				    this.transform.position.y + yDir == 9) {
+					Transform transform = Move (-2, 0, out hit);
+					if (!transform && needsToPoop && poopTimer < 0) {
+						Instantiate (Poop, oldPos, Quaternion.identity);
+						needsToPoop = false;
+					}
+				} else {
+					Transform transform = Move (-xDir, -yDir, out hit);
+					if (!transform && needsToPoop && poopTimer < 0) {
+						Instantiate (Poop, oldPos, Quaternion.identity);
+						needsToPoop = false;
+					}
+				}
+					
             }
         } else {
             ChargeMove();
@@ -84,6 +94,8 @@ public class PetController : MovingObject {
 			taskFrequency = Random.Range (0, 6f);
 			if (Random.Range (0, 3) == 1) {
 				isDone = true;
+				gameManager.IncreaseScore (10);
+
 			}
             needsToPoop = true;
             poopTimer = Random.Range(0, poopTimerMax);
