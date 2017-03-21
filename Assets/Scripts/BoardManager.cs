@@ -19,6 +19,7 @@ public class BoardManager : MonoBehaviour
 		}
 	}
 
+	public int difficulty = 0;
 	public int columns = 8;
 	public int rows = 8;
 	public Count furnitureCount = new Count (10, 15);
@@ -34,6 +35,7 @@ public class BoardManager : MonoBehaviour
 	// boardHolder is just to make game hierarchy look nicer
 	private Transform boardHolder;
 	private List<Vector3> gridPositions = new List<Vector3> ();
+	private float doggoFreq;
 
 	// Creates list of all possible locations on the board
 	void InitializeList () {
@@ -90,8 +92,22 @@ public class BoardManager : MonoBehaviour
 	public void SetupScene (int doggos) {
 		BoardSetup ();
 		InitializeList ();
+		switch (difficulty) {
+		case 0:
+			doggoFreq = 20f;
+			break;
+		case 1:
+			doggoFreq = 10f;
+			break;
+		case 2:
+			doggoFreq = 5f;
+			break;
+		default:
+			doggoFreq = 60f;
+			break;
+		}
 		LayoutObjectsAtRandom (furnitureTiles, furnitureCount.minimum, furnitureCount.maximum);
-		InvokeRepeating ("DoggoSpawner", 0.0f, 5.0f);
+		InvokeRepeating ("DoggoSpawner", 0.0f, doggoFreq);
 		Instantiate (door, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity);
 	}
 
@@ -118,4 +134,9 @@ public class BoardManager : MonoBehaviour
 	public int GetRows() {
 		return this.rows;
 	}
+
+	public void SetDifficulty(int level) {
+		difficulty = level;
+	}
 }
+
