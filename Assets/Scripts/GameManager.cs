@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour {
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
         levelText.text = "Start Game";
+
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
 
