@@ -30,7 +30,7 @@ public abstract class MovingObject : MonoBehaviour {
         }
     }
 
-   protected bool Move(int xDir, int yDir, out RaycastHit2D hit) {
+   protected Transform Move(int xDir, int yDir, out RaycastHit2D hit) {
         Vector2 start = transform.position;
         Vector2 end = start + new Vector2(xDir, yDir);
 
@@ -38,14 +38,18 @@ public abstract class MovingObject : MonoBehaviour {
         hit = Physics2D.Linecast(start, end, blockingLayer);
         boxCollider.enabled = true;
 
+        if (start == end) {
+            return transform;
+        }
+
         if (hit.transform == null) {
             Vector3 target = new Vector3(end.x, end.y, 0);
             GameObject instance = Instantiate(collisionBox, target, Quaternion.identity);
             StartCoroutine(SmoothMovement(end, instance));
             moveCd = moveTime * 2;
-            return true;
+            return null;
         } else {
-            return false;
+            return hit.transform;
         }
     }
 
