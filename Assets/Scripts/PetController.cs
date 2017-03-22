@@ -12,6 +12,10 @@ public class PetController : MovingObject {
 	public bool isDone = false;
 	public GameObject Poop;
 
+	public AudioClip pooped;
+	public AudioClip doggoFail;
+	new AudioSource audio;
+
 //	private Animator animator;
 	private GameManager gameManager;
     private int xDir = 0;
@@ -23,8 +27,13 @@ public class PetController : MovingObject {
 	private bool isHungry = true;
 	private int happiness = 4;
 
+
+	private Animator animator;
+
 	protected override void Start () {
+		animator = gameObject.GetComponent<Animator> ();
 		gameManager = (GameManager) GameObject.Find("GameManager(Clone)").GetComponent(typeof(GameManager));
+		audio = GetComponent<AudioSource> ();
         moveTime = Random.Range(0.5f, 1f);
         ChargeMove();
         base.Start();
@@ -61,6 +70,7 @@ public class PetController : MovingObject {
 
 		if (happiness < 1) {
 			gameManager.incrementUnhappyPetCounter();
+			audio.PlayOneShot (doggoFail);
 			Destroy (gameObject);
 		}
 
@@ -82,7 +92,7 @@ public class PetController : MovingObject {
                 Vector3 oldPos = this.transform.position;
                 Transform transform = Move (xDir, yDir, out hit);
                 if (!transform && needsToPoop && poopTimer < 0) {
-					// poop animation
+					audio.PlayOneShot (pooped);
                     Instantiate (Poop, oldPos, Quaternion.identity);
                     needsToPoop = false;
                 }
@@ -93,7 +103,6 @@ public class PetController : MovingObject {
 	}
 
 	public bool feed() {
-		var animator = gameObject.GetComponent<Animator>();
 		if (isHungry) {
 			isHungry = false;
 			gameManager.IncreaseScore (10);
@@ -103,5 +112,10 @@ public class PetController : MovingObject {
 			return true;
 		}
 		return false;
+	}
+
+	public void play() {
+		Debug.Log ("playing");
+		animator.SetTrigger ("dogPlay");
 	}
 }

@@ -11,12 +11,14 @@ public abstract class MovingObject : MonoBehaviour {
 
     private BoxCollider2D boxCollider;
     private Rigidbody2D rb2D;
+	private Animator furnitureAnimator;
     private float speed;
     private float moveCd = 0;
 
     protected virtual void Start() {
         boxCollider = GetComponent<BoxCollider2D>();
         rb2D = GetComponent<Rigidbody2D>();
+		furnitureAnimator = GameObject.Find ("Furniture(Clone)").GetComponent<Animator> ();
         speed = 1f / moveTime;
 
     }
@@ -67,6 +69,9 @@ public abstract class MovingObject : MonoBehaviour {
     }
 
     protected void incrementKitchenFood() {
+		if (kitchenCounter == 0) {
+			furnitureAnimator.SetTrigger ("tableFud");
+		}
         kitchenCounter += 10;
 		Debug.Log (kitchenCounter);
     }
@@ -74,7 +79,9 @@ public abstract class MovingObject : MonoBehaviour {
     protected bool decrementKitchenFood() {
         if (kitchenCounter > 0) {
             kitchenCounter--;
-			Debug.Log (kitchenCounter);
+			if (kitchenCounter == 0) {
+				furnitureAnimator.SetTrigger ("tableIdle");
+			}
             return true;
         }
         return false;
