@@ -2,64 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
     public static GameManager instance = null;
     public BoardManager boardScript;
     public float maxTime = 300f;
+    public float time = 0f;
     public int lives = 5;
-    public float time;
-    public int doggos;
-
-    private Text lifeText;
-    private Text levelText;
-    private GameObject levelImage;
-    public float levelStartDelay = 2f;
 	public int score = 0;
 
+    public float levelEndDelay = 1f;
+    private Text lifeText;
+    private GameObject levelImage;
+
     void Awake() {
+        // Make sure there are no more than one GameManager instances
         if (instance == null) {
             instance = this;
         } else if (instance != this) {
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+        // Initialize the game
         boardScript = GetComponent<BoardManager>();
         InitGame();
     }
 	
-    void InitGame() {
-        lifeText = GameObject.Find("LifeText").GetComponent<Text>();
-        lifeText.text = "Lives: " + lives + "\nScore: " + score;
-        levelImage = GameObject.Find("LevelImage");
-        levelText = GameObject.Find("LevelText").GetComponent<Text>();
-        levelText.text = "Start Game";
-
-        levelImage.SetActive(true);
-        Invoke("HideLevelImage", levelStartDelay);
-
-        time = 0;
-        boardScript.SetupScene(doggos);
-    }
-
-    void HideLevelImage() {
-        levelImage.SetActive(false);
-    }
-
     void Update() {
         time += Time.deltaTime;
+        int displayTime = (int)maxTime - (int)time;
+        lifeText.text = "Time: " + (int)displayTime + "\nLives: " + lives + "\nScore: " + score;
         if (isGameOver()) {
-            Invoke("GameOver", levelStartDelay);
+            Invoke("GameOver", levelEndDelay);
         }
     }
+    private void InitGame() {
+        // Set the start text
+        lifeText = GameObject.Find("LifeText").GetComponent<Text>();
+        lifeText.text = "Time: " + maxTime + "\nLives: " + lives + "\nScore: " + score;
+
+        // Setup the Scene
+        boardScript.SetupScene();
+    }
+
 	public void IncreaseScore(int increase) {
 		score += increase;
 	}
 
-	public void incrementUnhappyPetCounter() {
+	public void loseLife() {
 		lives--;
-        lifeText.text = "Lives: " + lives + "\nScore: " + score;
 	}
 
 	private bool isGameOver() {
@@ -70,8 +63,7 @@ public class GameManager : MonoBehaviour {
         }
 	}
     private void GameOver() {
-        levelText.text = "Game Over";
-        levelImage.SetActive(true);
         enabled = false;
+        SceneManager.LoadScene("End");
     }
 }

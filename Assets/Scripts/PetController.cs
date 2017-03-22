@@ -5,39 +5,61 @@ using Random = UnityEngine.Random;
 
 public class PetController : MovingObject {
 
-    // amount of time until pet HAS to change direction
+    // Object initializations
+    public GameObject Poop;
+    private GameManager gameManager;
+    private Animator animator;
+
+    // Audio variables
+    public AudioClip pooped;
+    public AudioClip doggoFail;
+    new AudioSource audio;
+
+    // Doggo movement variables
     public float chargeCooldownMax = 1f;
-    public float poopTimerMax = 1f;
-
-	public bool isDone = false;
-	public GameObject Poop;
-
-	public AudioClip pooped;
-	public AudioClip doggoFail;
-	new AudioSource audio;
-
-//	private Animator animator;
-	private GameManager gameManager;
+    private float chargeCooldown = 0;
     private int xDir = 0;
     private int yDir = 0;
-    private float chargeCooldown = 0;
-	private float taskTimer = 20f;
-    private bool needsToPoop = false;
+
+    // Doggo status variables
+    public int happinessMax = 4;
+    private int happiness;
+
+    // Hungry Timer
+    public float patienceMax = 7f;
+    private float patience;
+    public float hungerCooldownMax = 10f;
+    private float hungerCooldown;
+    private bool isHungry = false;
+    public int reqFoodMax = 5;
+    public int reqFoodMin = 3;
+    private int reqFood;
+    private int foodEaten = 0;
+
+
+    // Play Cooldown
+    public float playCooldownMax = 5f;
+    private float playCooldown = 0;
+    private bool hasPlayed = false;
+
+    // Doggo poop timer
+    public float poopTimerMax = 1f;
     private float poopTimer = 0;
-	private bool isHungry = true;
-	private int happiness = 4;
+    private bool needsToPoop = false;
 
-
-	private Animator animator;
-
-	protected override void Start () {
-		animator = gameObject.GetComponent<Animator> ();
-		gameManager = (GameManager) GameObject.Find("GameManager(Clone)").GetComponent(typeof(GameManager));
-		audio = GetComponent<AudioSource> ();
+    protected override void Start() {
         moveTime = Random.Range(0.5f, 1f);
+        animator = gameObject.GetComponent<Animator>();
+        gameManager = (GameManager)GameObject.Find("GameManager(Clone)").GetComponent(typeof(GameManager));
+        audio = GetComponent<AudioSource>();
+        happiness = happinessMax;
+        patience = patienceMax;
+        hungerCooldown = hungerCooldownMax;
+        // TODO 0 is a bad number
+        reqFood = Random.Range(reqFoodMin, reqFoodMax);
         ChargeMove();
         base.Start();
-	}
+    }
 
     private void ChargeMove() {
         chargeCooldown = Random.Range(0, chargeCooldownMax);
@@ -48,74 +70,117 @@ public class PetController : MovingObject {
         }
     }
 
-	// Update is called once per frame
-	void Update () {
-		var animator = gameObject.GetComponent<Animator>();
-		if (isHungry) {
-			switch (happiness) {
-			case 4:
-				animator.SetTrigger ("greenFud");
-				break;
-			case 3: 
-				animator.SetTrigger ("yellowFud");
-				break;
-			case 2:
-				animator.SetTrigger ("redFud");
-				break;
-			case 1:
-				animator.SetTrigger ("cryEmote");
-				break;
-			}
-		}
+    void Update() {
+        // Hunger variables update 
+        if (isHungry) {
+            if (patience >= 0) {
+                patience -= Time.deltaTime;
+            } else {
+                happiness--;
+                // TODO make the values random
+                patience = patienceMax;
+            }
+            switch (happiness) {
+                case 4:
+                    animator.SetTrigger("greenFud");
+                    break;
+                case 3:
+                    animator.SetTrigger("yellowFud");
+                    break;
+                case 2:
+                    animator.SetTrigger("redFud");
+                    break;
+                case 1:
+                    animator.SetTrigger("cryEmote");
+                    break;
+            }
+        } else {
+            if (hungerCooldown >= 0) {
+                hungerCooldown -= Time.deltaTime;
+            } else {
+                hungerCooldown = hungerCooldownMax;
+                isHungry = true;
+            }
+        }
 
-		if (happiness < 1) {
-			gameManager.incrementUnhappyPetCounter();
-			audio.PlayOneShot (doggoFail);
-			Destroy (gameObject);
-		}
+        // Play variables update
+        if (playCooldown >= 0) {
+            playCooldown -= Time.deltaTime;
+        } else {
+            hasPlayed = false;
+        }
 
-        // amount of time between tasks
-		if (taskTimer >= 0) {
-			taskTimer -= Time.deltaTime;
-		} else {
-			happiness--;
-			taskTimer = 4f;
-		}
+        // Poop variables update
         if (poopTimer >= 0) {
             poopTimer -= Time.deltaTime;
         }
+
         // movement code
         if (chargeCooldown >= 0) {
             chargeCooldown -= Time.deltaTime;
+
             if (CanMove()) {
                 RaycastHit2D hit;
                 Vector3 oldPos = this.transform.position;
                 Transform transform = Move (xDir, yDir, out hit);
                 if (!transform && needsToPoop && poopTimer < 0) {
-					audio.PlayOneShot (pooped);
                     Instantiate (Poop, oldPos, Quaternion.identity);
+					audio.PlayOneShot (pooped);
                     needsToPoop = false;
                 }
             }
         } else {
             ChargeMove();
         }
+
+		if (happiness <= 0) {
+			gameManager.loseLife();
+			audio.PlayOneShot (doggoFail);
+			Destroy (gameObject);
+		}
+
 	}
+
+    private bool Despawn() {
+        if (foodEaten >= reqFood) {
+			gameManager.IncreaseScore (30);
+            // include animations for this
+            Destroy(gameObject);
+            return true;
+        }
+        return false;
+    }
 
 	public bool feed() {
 		if (isHungry) {
+            foodEaten++;
+            Despawn();
 			isHungry = false;
-			gameManager.IncreaseScore (10);
-			animator.SetTrigger ("heartEmote");
+            happiness = 4;
 			needsToPoop = true;
             poopTimer = Random.Range(0, poopTimerMax);
+			gameManager.IncreaseScore (10);
+			animator.ResetTrigger ("greenFud");
+			animator.ResetTrigger ("yellowFud");
+			animator.ResetTrigger ("redFud");
+			animator.ResetTrigger ("cryEmote");
+			animator.SetTrigger ("heartEmote");
 			return true;
 		}
 		return false;
 	}
 
 	public void play() {
-		Debug.Log ("playing");
-		animator.SetTrigger ("dogPlay");
+        if (!hasPlayed) {
+            playCooldown = playCooldownMax;
+            hasPlayed = true;
+            if (happiness < 4) 
+                happiness++;
+			animator.ResetTrigger ("greenFud");
+			animator.ResetTrigger ("yellowFud");
+			animator.ResetTrigger ("redFud");
+			animator.ResetTrigger ("cryEmote");
+            animator.SetTrigger("dogPlay");
+        }
 	}
 }

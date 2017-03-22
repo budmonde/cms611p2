@@ -4,21 +4,23 @@ using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour {
 
-    public float moveTime = 0.1f;
-    public LayerMask blockingLayer;
+    // Object declarations
     public GameObject collisionBox;
-    public static int kitchenCounter = 0;
-
+    public LayerMask blockingLayer;
     private BoxCollider2D boxCollider;
     private Rigidbody2D rb2D;
-	private Animator furnitureAnimator;
+	private Animator tableAnimator;
+
+    public float moveTime = 0.1f;
+    public static int kitchenCounter = 0;
+
     private float speed;
     private float moveCd = 0;
 
     protected virtual void Start() {
         boxCollider = GetComponent<BoxCollider2D>();
         rb2D = GetComponent<Rigidbody2D>();
-		furnitureAnimator = GameObject.Find ("Furniture(Clone)").GetComponent<Animator> ();
+		tableAnimator = GameObject.Find ("Table(Clone)").GetComponent<Animator> ();
         speed = 1f / moveTime;
 
     }
@@ -49,7 +51,7 @@ public abstract class MovingObject : MonoBehaviour {
             GameObject instance = Instantiate(collisionBox, target, Quaternion.identity);
             instance.transform.parent = this.transform;
             StartCoroutine(SmoothMovement(end, instance));
-            moveCd = moveTime * 2;
+            moveCd = moveTime * 3;
             return null;
         } else {
             return hit.transform;
@@ -70,17 +72,16 @@ public abstract class MovingObject : MonoBehaviour {
 
     protected void incrementKitchenFood() {
 		if (kitchenCounter == 0) {
-			furnitureAnimator.SetTrigger ("tableFud");
+			tableAnimator.SetTrigger ("tableFud");
 		}
         kitchenCounter += 10;
-		Debug.Log (kitchenCounter);
     }
 
     protected bool decrementKitchenFood() {
         if (kitchenCounter > 0) {
             kitchenCounter--;
 			if (kitchenCounter == 0) {
-				furnitureAnimator.SetTrigger ("tableIdle");
+				tableAnimator.SetTrigger ("tableIdle");
 			}
             return true;
         }
