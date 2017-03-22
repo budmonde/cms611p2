@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LoadScreen : MonoBehaviour {
 	public void clickStartGame(){
-		Application.LoadLevel ("Difficulty");
+		SceneManager.LoadScene ("Main");
 	}
 
 	public void clickPlayAgain(){
-		Application.LoadLevel ("Start");
+		SceneManager.LoadScene ("Start");
 	}
 
 	public void clickInstructions(){
-		Application.LoadLevel ("Instructions");
+		SceneManager.LoadScene ("Instructions");
 	}
 
 	public void clickEasyGame(){
