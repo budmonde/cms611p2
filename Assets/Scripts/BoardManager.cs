@@ -22,7 +22,7 @@ public class BoardManager : MonoBehaviour
 	public int difficulty = 0;
 	public int columns = 8;
 	public int rows = 8;
-	public Count furnitureCount = new Count (10, 15);
+	public Count furnitureCount = new Count (1, 1);
 	public GameObject door;
 	public GameObject Trash;
     public LayerMask blockingLayer;

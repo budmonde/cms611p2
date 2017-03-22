@@ -1,4 +1,4 @@
-﻿﻿using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +7,7 @@ public abstract class MovingObject : MonoBehaviour {
     public float moveTime = 0.1f;
     public LayerMask blockingLayer;
     public GameObject collisionBox;
-    public int kitchenCounter = 0;
+    public static int kitchenCounter = 0;
 
     private BoxCollider2D boxCollider;
     private Rigidbody2D rb2D;
@@ -67,12 +67,14 @@ public abstract class MovingObject : MonoBehaviour {
     }
 
     protected void incrementKitchenFood() {
-        kitchenCounter++;
+        kitchenCounter += 10;
+		Debug.Log (kitchenCounter);
     }
 
     protected bool decrementKitchenFood() {
         if (kitchenCounter > 0) {
             kitchenCounter--;
+			Debug.Log (kitchenCounter);
             return true;
         }
         return false;

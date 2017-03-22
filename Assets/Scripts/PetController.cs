@@ -12,16 +12,16 @@ public class PetController : MovingObject {
 	public bool isDone = false;
 	public GameObject Poop;
 
+//	private Animator animator;
 	private GameManager gameManager;
     private int xDir = 0;
     private int yDir = 0;
     private float chargeCooldown = 0;
 	private float taskTimer = 20f;
-	private float taskFrequency;
     private bool needsToPoop = false;
     private float poopTimer = 0;
-	private bool isHungry = false;
-	private int happiness = 3;
+	private bool isHungry = true;
+	private int happiness = 4;
 
 	protected override void Start () {
 		gameManager = (GameManager) GameObject.Find("GameManager(Clone)").GetComponent(typeof(GameManager));
@@ -32,26 +32,39 @@ public class PetController : MovingObject {
 
     private void ChargeMove() {
         chargeCooldown = Random.Range(0, chargeCooldownMax);
-		taskFrequency = Random.Range (0, 6f);
         xDir = Random.Range(-1, 2);
         yDir = Random.Range(-1, 2);
         if (xDir != 0) {
             yDir = 0;
         }
     }
-	
+
 	// Update is called once per frame
 	void Update () {
+		var animator = gameObject.GetComponent<Animator>();
+		if (isHungry) {
+			switch (happiness) {
+			case 4:
+				animator.SetTrigger ("greenFud");
+				break;
+			case 3: 
+				animator.SetTrigger ("yellowFud");
+				break;
+			case 2:
+				animator.SetTrigger ("redFud");
+				break;
+			case 1:
+				animator.SetTrigger ("cryEmote");
+				break;
+			}
+		}
+
 		if (happiness < 1) {
 			gameManager.incrementUnhappyPetCounter();
 			Destroy (gameObject);
 		}
+
         // amount of time between tasks
-		if (!isHungry && taskFrequency >= 0) {
-			taskFrequency -= Time.deltaTime;
-		} else {
-			isHungry = true;
-		}
 		if (taskTimer >= 0) {
 			taskTimer -= Time.deltaTime;
 		} else {
@@ -69,6 +82,7 @@ public class PetController : MovingObject {
                 Vector3 oldPos = this.transform.position;
                 Transform transform = Move (xDir, yDir, out hit);
                 if (!transform && needsToPoop && poopTimer < 0) {
+					// poop animation
                     Instantiate (Poop, oldPos, Quaternion.identity);
                     needsToPoop = false;
                 }
@@ -79,14 +93,12 @@ public class PetController : MovingObject {
 	}
 
 	public bool feed() {
+		var animator = gameObject.GetComponent<Animator>();
 		if (isHungry) {
 			isHungry = false;
-			taskFrequency = Random.Range (0, 6f);
-			if (Random.Range (0, 3) == 1) {
-				isDone = true;
-				gameManager.IncreaseScore (10);
-			}
-            needsToPoop = true;
+			gameManager.IncreaseScore (10);
+			animator.SetTrigger ("heartEmote");
+			needsToPoop = true;
             poopTimer = Random.Range(0, poopTimerMax);
 			return true;
 		}
