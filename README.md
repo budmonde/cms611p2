@@ -29,6 +29,10 @@ This Project was my second video game project I worked on for the course [*CMS.6
   - A standalone *Windows* and *Mac OS X* executable packaged as ZIP archives.
   - A mobile game to be run on *Android* packaged as an APK file.
 
+## Project Build
+
+This project did not experience the smoothest development process and due to the tight deadline, a fully functional game was not completed. The "working" build of our project can be found [here](https://budmonde.github.io/gamedev/p3/index.html), a *Unity WebGL* page.
+
 ## Personal Notes
 
 This project was arguably my second attempt at using [*Unity*](https://unity3d.com/) to make a video game (likely same for my teammates). My first project linked [here] (https://github.com/budmonde/magescape) was mostly an exercise on learning the *Unity Engine*. Working on this project has been a great experience in retrospect (although the proces itself was a complete disaster). Hopefully I can update this README with my latest video game project as a point of reference to how I started off -- maybe could be a useful guide for beginning game developers to see that everybody starts off sucking(?). (This all would only sound cool and inspirational on the pretense that I do follow up and make a worthwhile video game... otherwise this repository is like super depressing >~<) PS. I'm not actually a serious game developer -- just something I found mildly interesting, please do not find this rambling to be discouraging lol.
